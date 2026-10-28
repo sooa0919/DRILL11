@@ -4,6 +4,7 @@ class AutoRun:
     def __init__(self, boy, clock):
         self.boy = boy
         self.clock = clock
+        self.started_at = None
 
     def enter(self):
         self.started_at = self.clock()
@@ -35,4 +36,5 @@ class AutoRun:
         self.reverse_at_edge()
 
     def exit(self):
+        self.started_at = None
         self.boy.draw_scale = 1.0

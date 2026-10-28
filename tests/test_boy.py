@@ -31,6 +31,22 @@ class BoyTests(unittest.TestCase):
                 self.boy.finish_auto_run()
                 self.key(SDLK_a, SDL_KEYUP)
 
+    def test_timeout_restores_and_reentry_restarts_timer(self):
+        self.key(SDLK_a)
+        self.now += 5
+        self.boy.update()
+        self.assertEqual(self.boy.state, 'IDLE')
+        self.assertEqual(self.boy.draw_scale, 1)
+        self.assertIsNone(self.boy.auto_run.started_at)
+        self.key(SDLK_a)
+        self.assertEqual(self.boy.state, 'IDLE')
+        self.key(SDLK_a, SDL_KEYUP)
+        self.key(SDLK_a)
+        self.assertEqual(self.boy.auto_run.started_at, self.now)
+        self.now += 4.99
+        self.boy.update()
+        self.assertEqual(self.boy.state, 'AUTO_RUN')
+
     def test_manual_movement(self):
         self.key(SDLK_LEFT)
         self.boy.update()
