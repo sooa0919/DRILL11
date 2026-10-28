@@ -9,6 +9,7 @@ class AutoRun:
 
     def update(self):
         boy = self.boy
+        boy.frame = (boy.frame + 1) % 8
         boy.x += boy.face_dir * boy.RUN_SPEED * boy.AUTO_RUN_SPEED_MULTIPLIER
 
     def exit(self):

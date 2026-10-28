@@ -129,7 +129,7 @@ class Boy:
                 100, 100,
             )
             return
-        if self.state == 'RUN':
+        if self.state in ('RUN', 'AUTO_RUN'):
             row = 100 if self.face_dir == 1 else 0
         else:
             row = 300 if self.face_dir == 1 else 200
