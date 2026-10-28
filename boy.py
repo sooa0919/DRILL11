@@ -9,7 +9,12 @@ from transitions import Machine
 
 class Boy:
     RUN_SPEED = 5
-    HALF_WIDTH = 50
+    SPRITE_SIZE = 100
+    HALF_WIDTH = SPRITE_SIZE / 2
+    AUTO_RUN_SPEED_MULTIPLIER = 2
+    AUTO_RUN_SCALE = 1.5
+    AUTO_RUN_DURATION = 5.0
+    IDLE_DURATION = 5.0
     SCREEN_WIDTH = 800
 
     def __init__(self):
@@ -62,7 +67,7 @@ class Boy:
         self.frame = 0
 
     def _idle_timed_out(self):
-        return monotonic() - self.idle_started_at >= 5.0
+        return monotonic() - self.idle_started_at >= self.IDLE_DURATION
 
     def _enter_sleep(self):
         self.frame = 0
