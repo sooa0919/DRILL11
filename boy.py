@@ -7,6 +7,8 @@ from pico2d import (
 )
 from transitions import Machine
 
+from auto_run import AutoRun
+
 class Boy:
     RUN_SPEED = 5
     SPRITE_SIZE = 100
@@ -22,16 +24,23 @@ class Boy:
         self.frame = 0
         self.face_dir = 1
         self.image = load_image('animation_sheet.png')
+        self.auto_run = AutoRun(self)
         self.state_machine = Machine(
             model=self,
             states=[
                 {'name': 'IDLE', 'on_enter': '_enter_idle'},
+                {'name': 'AUTO_RUN', 'on_enter': self.auto_run.enter,
+                 'on_exit': self.auto_run.exit},
                 {'name': 'RUN', 'on_enter': '_enter_run'},
                 {'name': 'SLEEP', 'on_enter': '_enter_sleep'},
             ],
             initial='IDLE',
             auto_transitions=False,
             transitions=[
+                {'trigger': 'start_auto_run', 'source': 'IDLE', 'dest': 'AUTO_RUN'},
+                {'trigger': 'finish_auto_run', 'source': 'AUTO_RUN', 'dest': 'IDLE'},
+                {'trigger': 'tick', 'source': 'AUTO_RUN', 'dest': None,
+                 'after': self.auto_run.update},
                 {
                     'trigger': 'tick',
                     'source': 'IDLE',
