@@ -6,6 +6,7 @@ class AutoRun:
 
     def enter(self):
         self.boy.frame = 0
+        self.boy.draw_scale = self.boy.AUTO_RUN_SCALE
 
     def update(self):
         boy = self.boy
@@ -13,4 +14,4 @@ class AutoRun:
         boy.x += boy.face_dir * boy.RUN_SPEED * boy.AUTO_RUN_SPEED_MULTIPLIER
 
     def exit(self):
-        pass
+        self.boy.draw_scale = 1.0

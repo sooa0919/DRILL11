@@ -24,6 +24,7 @@ class Boy:
         self.frame = 0
         self.face_dir = 1
         self.a_pressed = False
+        self.draw_scale = 1.0
         self.image = load_image('animation_sheet.png')
         self.auto_run = AutoRun(self)
         self.state_machine = Machine(
@@ -133,4 +134,9 @@ class Boy:
             row = 100 if self.face_dir == 1 else 0
         else:
             row = 300 if self.face_dir == 1 else 200
-        self.image.clip_draw(self.frame * 100, row, 100, 100, self.x, self.y)
+        size = self.SPRITE_SIZE * self.draw_scale
+        draw_y = self.y + (size - self.SPRITE_SIZE) / 2
+        self.image.clip_draw(
+            self.frame * self.SPRITE_SIZE, row,
+            self.SPRITE_SIZE, self.SPRITE_SIZE, self.x, draw_y, size, size,
+        )
