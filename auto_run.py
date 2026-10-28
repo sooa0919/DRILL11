@@ -7,6 +7,12 @@ class AutoRun:
     def enter(self):
         self.boy.frame = 0
         self.boy.draw_scale = self.boy.AUTO_RUN_SCALE
+        left, right = self.bounds()
+        self.boy.x = max(left, min(right, self.boy.x))
+
+    def bounds(self):
+        half_width = self.boy.SPRITE_SIZE * self.boy.draw_scale / 2
+        return half_width, self.boy.SCREEN_WIDTH - half_width
 
     def update(self):
         boy = self.boy
