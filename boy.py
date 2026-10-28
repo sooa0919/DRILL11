@@ -26,7 +26,7 @@ class Boy:
         self.a_pressed = False
         self.draw_scale = 1.0
         self.image = load_image('animation_sheet.png')
-        self.auto_run = AutoRun(self)
+        self.auto_run = AutoRun(self, lambda: monotonic())
         self.state_machine = Machine(
             model=self,
             states=[
