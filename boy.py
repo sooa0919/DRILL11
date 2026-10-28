@@ -57,7 +57,7 @@ class Boy:
                 },
                 {
                     'trigger': 'start_run',
-                    'source': ['IDLE', 'SLEEP'],
+                    'source': ['IDLE', 'SLEEP', 'AUTO_RUN'],
                     'dest': 'RUN',
                 },
                 {'trigger': 'stop_run', 'source': 'RUN', 'dest': 'IDLE'},
@@ -101,7 +101,7 @@ class Boy:
             self.wake_up()
         elif event.type == SDL_KEYDOWN and event.key in (SDLK_LEFT, SDLK_RIGHT):
             self.face_dir = -1 if event.key == SDLK_LEFT else 1
-            if self.state in ('IDLE', 'SLEEP'):
+            if self.state in ('IDLE', 'SLEEP', 'AUTO_RUN'):
                 self.start_run()
         elif (event.type == SDL_KEYUP
                 and event.key in (SDLK_LEFT, SDLK_RIGHT)
