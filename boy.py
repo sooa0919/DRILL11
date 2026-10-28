@@ -23,6 +23,7 @@ class Boy:
         self.x, self.y = 400, 90
         self.frame = 0
         self.face_dir = 1
+        self.a_pressed = False
         self.image = load_image('animation_sheet.png')
         self.auto_run = AutoRun(self)
         self.state_machine = Machine(
@@ -85,9 +86,14 @@ class Boy:
         self.frame = 0
 
     def handle_event(self, event):
+        if event.type == SDL_KEYUP and event.key == SDLK_a:
+            self.a_pressed = False
+            return
         if event.type == SDL_KEYDOWN and event.key == SDLK_a:
-            if self.state == 'IDLE':
-                self.start_auto_run()
+            if not self.a_pressed and not getattr(event, 'repeat', False):
+                if self.state == 'IDLE':
+                    self.start_auto_run()
+            self.a_pressed = True
             return
         if (event.type == SDL_KEYDOWN and event.key == SDLK_SPACE
                 and self.state == 'SLEEP'):
