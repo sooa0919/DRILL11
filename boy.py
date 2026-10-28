@@ -3,7 +3,7 @@ from time import monotonic
 
 from pico2d import (
     load_image, SDL_KEYDOWN, SDL_KEYUP,
-    SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE,
+    SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE, SDLK_a,
 )
 from transitions import Machine
 
@@ -85,6 +85,10 @@ class Boy:
         self.frame = 0
 
     def handle_event(self, event):
+        if event.type == SDL_KEYDOWN and event.key == SDLK_a:
+            if self.state == 'IDLE':
+                self.start_auto_run()
+            return
         if (event.type == SDL_KEYDOWN and event.key == SDLK_SPACE
                 and self.state == 'SLEEP'):
             self.wake_up()
