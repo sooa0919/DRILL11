@@ -117,16 +117,20 @@
 
 ```mermaid
 stateDiagram-v2
+    state "대기" as IDLE
+    state "수동 달리기" as RUN
+    state "자동 달리기" as AUTO_RUN
+    state "수면" as SLEEP
     [*] --> IDLE
-    IDLE --> AUTO_RUN : A key down
-    IDLE --> RUN : LEFT or RIGHT key down
-    IDLE --> SLEEP : 5 seconds in IDLE
-    RUN --> IDLE : LEFT or RIGHT key up
-    AUTO_RUN --> AUTO_RUN : screen edge / reverse direction
-    AUTO_RUN --> RUN : LEFT or RIGHT key down
-    AUTO_RUN --> IDLE : 5 seconds in AUTO_RUN
-    SLEEP --> IDLE : SPACE key down
-    SLEEP --> RUN : LEFT or RIGHT key down
+    IDLE --> AUTO_RUN : A 키 누름
+    IDLE --> RUN : 좌우 방향키 누름
+    IDLE --> SLEEP : 대기 5초 경과
+    RUN --> IDLE : 좌우 방향키 놓음
+    AUTO_RUN --> AUTO_RUN : 좌우 경계 도달 / 방향 반전
+    AUTO_RUN --> RUN : 좌우 방향키 누름
+    AUTO_RUN --> IDLE : 자동 달리기 5초 경과
+    SLEEP --> IDLE : 스페이스 키 누름
+    SLEEP --> RUN : 좌우 방향키 누름
 ```
 
 위 도식은 구현 기준이다. 최종 산출물에는 Markdown 도식과 별도로 열어서 확인할 수 있는 이미지 파일이 필요하다.

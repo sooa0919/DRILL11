@@ -1,38 +1,52 @@
-# Boy state machine
+# 소년 캐릭터 상태 다이어그램
+
+![한국어 상태 다이어그램](images/state_machine.png)
 
 ```mermaid
 stateDiagram-v2
+    state "대기" as IDLE
+    state "수동 달리기" as RUN
+    state "자동 달리기" as AUTO_RUN
+    state "수면" as SLEEP
     [*] --> IDLE
-    IDLE --> SLEEP : 5 seconds in IDLE
-    SLEEP --> IDLE : SPACE key down
-    IDLE --> RUN : LEFT or RIGHT key down
-    SLEEP --> RUN : LEFT or RIGHT key down
-    RUN --> IDLE : LEFT or RIGHT key up
-    IDLE : enter / reset timer and frame
-    IDLE : tick / advance idle animation
-    RUN : tick / move and advance run animation
-    RUN : face_dir selects left or right
-    RUN : x is clamped to 50..750
-    SLEEP : lie on the grass, freeze frame
+    IDLE --> AUTO_RUN : A 키 누름
+    IDLE --> RUN : 좌우 방향키 누름
+    IDLE --> SLEEP : 대기 5초 경과
+    RUN --> IDLE : 좌우 방향키 놓음
+    AUTO_RUN --> AUTO_RUN : 좌우 경계 도달 / 방향 반전
+    AUTO_RUN --> RUN : 좌우 방향키 누름
+    AUTO_RUN --> IDLE : 자동 달리기 5초 경과
+    SLEEP --> IDLE : 스페이스 키 누름
+    SLEEP --> RUN : 좌우 방향키 누름
 ```
 
-The boy starts in `IDLE`. A monotonic clock measures five seconds from
-each entry into `IDLE`, independently of the frame rate. Once the time
-expires, `tick()` changes the state to `SLEEP`.
+## 상태별 동작
 
-In `SLEEP`, the sprite is rotated onto its side and its animation is frozen.
-Pressing SPACE returns to `IDLE` and starts a fresh five-second timer.
-SPACE during `IDLE` does not reset the timer.
+| 상태 | 코드 이름 | 동작 |
+| --- | --- | --- |
+| 대기 | `IDLE` | 제자리 애니메이션. 진입 시 시간을 초기화하고 5초 후 수면으로 전환한다. |
+| 수동 달리기 | `RUN` | 업데이트당 5픽셀 이동. 기본 크기 100 × 100픽셀. 좌우 키 누름으로 방향을 갱신한다. |
+| 자동 달리기 | `AUTO_RUN` / `AutoRun` 클래스 | 업데이트당 10픽셀 이동. 크기 150 × 150픽셀. 좌우 경계에서 반전한다. |
+| 수면 | `SLEEP` | 누운 자세로 애니메이션을 멈춘다. |
 
-Pressing LEFT or RIGHT while in `IDLE` or `SLEEP` changes the state to the
-single `RUN` state. `face_dir` chooses the direction and sprite row without
-creating separate left and right states. Releasing an arrow key returns to `IDLE`, which restarts
-the five-second sleep timer. The boy's center is clamped from x=50 through
-x=750 so the 100-pixel-wide sprite remains completely on the 800-pixel canvas.
+## 자동 달리기 규칙
 
-Run from this directory:
+- 대기 상태에서 새로 A 키를 눌러야 시작한다. 직전 바라보던 방향을 계승한다.
+- A 키를 놓아도 달린다. A 키 반복 입력과 위·아래 방향키는 타이머를 바꾸지 않는다.
+- 확대된 크기에 맞춰 중심 x 좌표를 75~725로 제한한다. 진입 시에도 위치를 보정한다.
+- 경계에서는 실제 상태 재진입 없이 위치와 방향만 바꾸므로 타이머가 유지된다. 도식의 자기 전환은 이 동작을 나타낸다.
+- 좌우 방향키를 누르면 기본 크기로 복원하고 그 방향의 수동 달리기로 전환한다.
+- 단조 시계로 진입 후 5초가 지나면 기본 크기의 대기로 복귀한다. 대기의 수면 타이머도 새로 시작한다.
+- 입력을 먼저 처리하므로 방향키 누름과 만료가 같은 프레임에 발생하면 수동 달리기가 우선한다.
+- A를 계속 누른 채 만료되어도 자동으로 재진입하지 않는다. 놓았다가 다시 눌러야 한다.
+
+## 다이어그램 재생성
+
+게임 실행 의존성과 별도로 Pillow와 Windows 맑은 고딕 글꼴이 필요하다.
 
 ```powershell
-python -m pip install -r requirements.txt
-python main.py
+python -m pip install Pillow
+python tools/render_state_diagram.py
 ```
+
+생성 파일: `images/state_machine.png` (1800 × 1320픽셀).
