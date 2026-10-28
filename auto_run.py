@@ -8,7 +8,8 @@ class AutoRun:
         self.boy.frame = 0
 
     def update(self):
-        pass
+        boy = self.boy
+        boy.x += boy.face_dir * boy.RUN_SPEED
 
     def exit(self):
         pass
